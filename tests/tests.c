@@ -485,6 +485,30 @@ TT_TEST(EscapedStrings)
   config_destroy(&cfg);
 }
 
+TT_TEST(MathParsingBasic)
+{
+  config_t cfg;
+  int ok;
+  int ival;
+
+  config_init(&cfg);
+  config_set_include_dir(&cfg, "./testdata");
+
+  ok = config_read_file(&cfg, "testdata/mathparsing_basic.cfg");
+  if(!ok)
+  {
+    printf("error: %s:%d\n", config_error_text(&cfg),
+           config_error_line(&cfg));
+  }
+  TT_ASSERT_TRUE(ok);
+
+  ok = config_lookup_int(&cfg, "mathparsing.test00", &ival);
+  TT_ASSERT_TRUE(ok);
+  TT_ASSERT_INT_EQ(ival, 42);
+
+  config_destroy(&cfg);
+}
+
 /* ------------------------------------------------------------------------- */
 
 int main(int argc, char **argv)
@@ -504,6 +528,7 @@ int main(int argc, char **argv)
   TT_SUITE_TEST(LibConfigTests, BigInt7);
   TT_SUITE_TEST(LibConfigTests, RemoveSetting);
   TT_SUITE_TEST(LibConfigTests, EscapedStrings);
+  TT_SUITE_TEST(LibConfigTests, MathParsingBasic);
   TT_SUITE_RUN(LibConfigTests);
   failures = TT_SUITE_NUM_FAILURES(LibConfigTests);
   TT_SUITE_END(LibConfigTests);
